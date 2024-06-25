@@ -217,41 +217,6 @@ public:
             empleados[i]->guardar(out);
         }
     }
-
-    // Método para cargar empleados desde un archivo
-    void cargar(ifstream& in) {
-        int numEmpleados;
-        in >> numEmpleados;
-        in.ignore();  // Ignorar el salto de línea después del número
-
-        for (int i = 0; i < numEmpleados; ++i) {
-            string tipo, nom, fecha;
-            double salario, bono, comision, ventas;
-            int horas;
-
-            getline(in, tipo, ',');
-            getline(in, nom, ',');
-            in >> salario;
-            in.ignore();
-            getline(in, fecha, ',');
-
-            if (tipo == "Desarrollador") {
-                in >> horas;
-                in.ignore();
-                agregarEmpleado(new Desarrollador(nom, salario, fecha, horas));
-            } else if (tipo == "Disenador") {
-                in >> comision;
-                in.ignore();
-                in >> ventas;
-                in.ignore();
-                agregarEmpleado(new Disenador(nom, salario, fecha, comision, ventas));
-            } else if (tipo == "Gerente"){
-                in >> bono;
-                in.ignore();
-                agregarEmpleado(new Gerente(nom, salario, fecha, bono));
-            }
-        }   
-    }
 };
 
 // Prototipo del menú
@@ -260,9 +225,8 @@ void menu() {
     cout << "2. Eliminar Empleado\n";
     cout << "3. Buscar Empleado\n";
     cout << "4. Listar Empleados\n";
-    cout << "5. Cargar Empleados desde Archivo\n";
-    cout << "6. Guardar Empleados a Archivo\n";
-    cout << "7. Salir\n";
+    cout << "5. Guardar Empleados a Archivo\n";
+    cout << "6. Salir\n";
     cout << "Seleccione una opcion: ";
 }
 
@@ -396,20 +360,6 @@ int main() {
                 break;
             }
             case 5: {
-                cout << "Cargando informacion de empleados desde archivo..." << endl;
-                ifstream inFile("C:\\Users\\Thunder\\Documents\\Thunder\\Practicando\\empleados.txt");
-                if (!inFile) {
-                    cout << "Error al abrir el archivo." << endl;
-                    break;
-                }
-                deptoGerentes.cargar(inFile);
-                deptoDesarrolladores.cargar(inFile);
-                deptoDisenadores.cargar(inFile);
-                inFile.close();
-                cout << "Informacion cargada correctamente." << endl;
-                break;
-            }
-            case 6: {
                 cout << "Guardando información de empleados a archivo..." << endl;
                 ofstream outFile("C:\\Users\\Thunder\\Documents\\Thunder\\Practicando\\empleados.txt");
                 if (!outFile) {
@@ -423,13 +373,13 @@ int main() {
                 cout << "Informacion guardada correctamente." << endl;
                 break;
             }
-            case 7:
+            case 6:
                 cout << "Saliendo..." << endl;
                 break;
             default:
                 cout << "Opción no valida." << endl;
         }
-    } while (opcion != 7);
+    } while (opcion != 6);
 
     return 0;
 }
