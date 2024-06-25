@@ -231,155 +231,167 @@ void menu() {
 }
 
 int main() {
-    //Establecer tarifa estática
     double Thora;
-    cout << "Ingrese tarifa en soles de hora: ";
-    cin >> Thora;
-    Empleado::setTarifaHora(Thora);
+    try {   //Empieza bloque Try
+        // Lectura de la tarifa por hora
+        cout << "Ingrese tarifa en soles de hora: ";
+        cin >> Thora;
+        if (cin.fail()) {   //Si el ingreso fue de algun otro tipo que no sea double
+            throw runtime_error("Error: entrada no válida para tarifa por hora.");
+        }
+        cin.ignore();  // Limpiar el buffer de entrada
 
-    //Crear departamentos
-    Departamento<Gerente> deptoGerentes;
-    Departamento<Desarrollador> deptoDesarrolladores;
-    Departamento<Disenador> deptoDisenadores;
+        Empleado::setTarifaHora(Thora);
 
-    int opcion;
-    do {
-        menu();
-        cin >> opcion;
-        cin.ignore(); // Para evitar problemas con getline
-        switch (opcion) {
-            case 1: {
-                cout << "Tipo de Empleado (1. Gerente, 2. Desarrollador, 3. Disenador): ";
-                int tipo;
-                cin >> tipo;
-                cin.ignore();
+        // Creación de departamentos
+        Departamento<Gerente> deptoGerentes;
+        Departamento<Desarrollador> deptoDesarrolladores;
+        Departamento<Disenador> deptoDisenadores;
 
-                string nombre, fecha;
-                double salario;
-                cout << "Nombre: ";
-                getline(cin, nombre);
-                cout << "Salario Base: ";
-                cin >> salario;
-                cin.ignore();
-                cout << "Fecha de Contratacion (YYYY-MM-DD): ";
-                getline(cin, fecha);
+        int opcion;
+        do {
+            menu();
+            cin >> opcion;
+            cin.ignore(); // Limpiar el buffer de entrada
+            switch (opcion) {
+                case 1: {
+                    cout << "Tipo de Empleado (1. Gerente, 2. Desarrollador, 3. Disenador): ";
+                    int tipo;
+                    cin >> tipo;
+                    cin.ignore();
 
-                if (tipo == 1) {
-                    double bono;
-                    cout << "Bono: ";
-                    cin >> bono;
-                    deptoGerentes.agregarEmpleado(new Gerente(nombre, salario, fecha, bono));
-                } else if (tipo == 2) {
-                    int horasExtras;
-                    cout << "Horas Extras: ";
-                    cin >> horasExtras;
-                    deptoDesarrolladores.agregarEmpleado(new Desarrollador(nombre, salario, fecha, horasExtras));
-                } else if (tipo == 3) {
-                    double comision, ventas;
-                    cout << "Porcentaje de Comision: ";
-                    cin >> comision;
-                    cout << "Ventas Totales: ";
-                    cin >> ventas;
-                    deptoDisenadores.agregarEmpleado(new Disenador(nombre, salario, fecha, comision, ventas));
-                } else {
-                    cout << "Tipo de empleado no valido." << endl;
-                }
-                break;
-            }
-            case 2: {
-                cout << "Departamento (1. Gerentes, 2. Desarrolladores, 3. Disenadores): ";
-                int depto;
-                cin >> depto;
-                int indice;
-                cout << "Indice del empleado a eliminar: ";
-                cin >> indice;
+                    string nombre, fecha;
+                    double salario;
 
-                if (depto == 1) {
-                    deptoGerentes.eliminarEmpleado(indice - 1);
-                } else if (depto == 2) {
-                    deptoDesarrolladores.eliminarEmpleado(indice - 1);
-                } else if (depto == 3) {
-                    deptoDisenadores.eliminarEmpleado(indice - 1);
-                } else {
-                    cout << "Departamento no valido." << endl;
-                }
-                break;
-            }
-            case 3: {
-                cout << "Departamento (1. Gerentes, 2. Desarrolladores, 3. Disenadores): ";
-                int depto;
-                cin >> depto;
-                cin.ignore();
-                string nombre;
-                cout << "Nombre del empleado a buscar: ";
-                getline(cin, nombre);
+                    cout << "Nombre: ";
+                    getline(cin, nombre);
+                    cout << "Salario Base: ";
+                    cin >> salario;
+                    cin.ignore();
+                    cout << "Fecha de Contratacion (YYYY-MM-DD): ";
+                    getline(cin, fecha);
 
-                if (depto == 1) {
-                    Gerente* g = deptoGerentes.buscarEmpleado(nombre);
-                    if (g) {
-                        g->mostrarInformacion();
-                        cout << "Salario Calculado: " << g->calcularSalario() << endl;
+                    if (tipo == 1) {
+                        double bono;
+                        cout << "Bono: ";
+                        cin >> bono;
+                        //creación dinámica de objeto Gerente
+                        deptoGerentes.agregarEmpleado(new Gerente(nombre, salario, fecha, bono));
+                    } else if (tipo == 2) {
+                        int horasExtras;
+                        cout << "Horas Extras: ";
+                        cin >> horasExtras;
+                        //creación dinámica de objeto Desarrollador
+                        deptoDesarrolladores.agregarEmpleado(new Desarrollador(nombre, salario, fecha, horasExtras));
+                    } else if (tipo == 3) {
+                        double comision, ventas;
+                        cout << "Porcentaje de Comision: ";
+                        cin >> comision;
+                        cout << "Ventas Totales: ";
+                        cin >> ventas;
+                        //creación dinámica de objeto Disenador
+                        deptoDisenadores.agregarEmpleado(new Disenador(nombre, salario, fecha, comision, ventas));
                     } else {
-                        cout << "Gerente no encontrado." << endl;
+                        cout << "Tipo de empleado no valido." << endl;
                     }
-                } else if (depto == 2) {
-                    Desarrollador* d = deptoDesarrolladores.buscarEmpleado(nombre);
-                    if (d) {
-                        d->mostrarInformacion();
-                        cout << "Salario Calculado: " << d->calcularSalario() << endl;
-                    } else {
-                        cout << "Desarrollador no encontrado." << endl;
-                    }
-                } else if (depto == 3) {
-                    Disenador* d = deptoDisenadores.buscarEmpleado(nombre);
-                    if (d) {
-                        d->mostrarInformacion();
-                        cout << "Salario Calculado: " << d->calcularSalario() << endl;
-                    } else {
-                        cout << "Disenador no encontrado." << endl;
-                    }
-                } else {
-                    cout << "Departamento no valido." << endl;
-                }
-                break;
-            }
-            case 4: {
-                cout << "Departamento (1. Gerentes, 2. Desarrolladores, 3. Disenadores): ";
-                int depto;
-                cin >> depto;
-
-                if (depto == 1) {
-                    deptoGerentes.listarEmpleados();
-                } else if (depto == 2) {
-                    deptoDesarrolladores.listarEmpleados();
-                } else if (depto == 3) {
-                    deptoDisenadores.listarEmpleados();
-                } else {
-                    cout << "Departamento no valido." << endl;
-                }
-                break;
-            }
-            case 5: {
-                cout << "Guardando información de empleados a archivo..." << endl;
-                ofstream outFile("C:\\Users\\Thunder\\Documents\\Thunder\\Practicando\\empleados.txt");
-                if (!outFile) {
-                    cout << "Error al abrir el archivo." << endl;
                     break;
                 }
-                deptoGerentes.guardar(outFile);
-                deptoDesarrolladores.guardar(outFile);
-                deptoDisenadores.guardar(outFile);
-                outFile.close();
-                cout << "Informacion guardada correctamente." << endl;
-                break;
+                case 2: {
+                    cout << "Departamento (1. Gerentes, 2. Desarrolladores, 3. Disenadores): ";
+                    int depto;
+                    cin >> depto;
+                    int indice;
+                    cout << "Indice del empleado a eliminar: ";
+                    cin >> indice;
+
+                    if (depto == 1) {
+                        deptoGerentes.eliminarEmpleado(indice - 1);
+                    } else if (depto == 2) {
+                        deptoDesarrolladores.eliminarEmpleado(indice - 1);
+                    } else if (depto == 3) {
+                        deptoDisenadores.eliminarEmpleado(indice - 1);
+                    } else {
+                        cout << "Departamento no valido." << endl;
+                    }
+                    break;
+                }
+                case 3: {
+                    cout << "Departamento (1. Gerentes, 2. Desarrolladores, 3. Disenadores): ";
+                    int depto;
+                    cin >> depto;
+                    cin.ignore();
+                    string nombre;
+                    cout << "Nombre del empleado a buscar: ";
+                    getline(cin, nombre);
+
+                    if (depto == 1) {
+                        Gerente* g = deptoGerentes.buscarEmpleado(nombre);
+                        if (g) {
+                            g->mostrarInformacion();
+                            cout << "Salario Calculado: " << g->calcularSalario() << endl;
+                        } else {
+                            cout << "Gerente no encontrado." << endl;
+                        }
+                    } else if (depto == 2) {
+                        Desarrollador* d = deptoDesarrolladores.buscarEmpleado(nombre);
+                        if (d) {
+                            d->mostrarInformacion();
+                            cout << "Salario Calculado: " << d->calcularSalario() << endl;
+                        } else {
+                            cout << "Desarrollador no encontrado." << endl;
+                        }
+                    } else if (depto == 3) {
+                        Disenador* d = deptoDisenadores.buscarEmpleado(nombre);
+                        if (d) {
+                            d->mostrarInformacion();
+                            cout << "Salario Calculado: " << d->calcularSalario() << endl;
+                        } else {
+                            cout << "Disenador no encontrado." << endl;
+                        }
+                    } else {
+                        cout << "Departamento no valido." << endl;
+                    }
+                    break;
+                }
+                case 4: {
+                    cout << "Departamento (1. Gerentes, 2. Desarrolladores, 3. Disenadores): ";
+                    int depto;
+                    cin >> depto;
+
+                    if (depto == 1) {
+                        deptoGerentes.listarEmpleados();
+                    } else if (depto == 2) {
+                        deptoDesarrolladores.listarEmpleados();
+                    } else if (depto == 3) {
+                        deptoDisenadores.listarEmpleados();
+                    } else {
+                        cout << "Departamento no valido." << endl;
+                    }
+                    break;
+                }
+                case 5: {
+                    cout << "Guardando información de empleados a archivo..." << endl;
+                    ofstream outFile("empleados.txt");
+                    if (!outFile) {
+                        throw runtime_error("Error al abrir el archivo de salida.");
+                    }
+                    deptoGerentes.guardar(outFile);
+                    deptoDesarrolladores.guardar(outFile);
+                    deptoDisenadores.guardar(outFile);
+                    outFile.close();
+                    cout << "Informacion guardada correctamente." << endl;
+                    break;
+                }
+                case 6:
+                    cout << "Saliendo..." << endl;
+                    break;
+                default:
+                    cout << "Opción no valida." << endl;
             }
-            case 6:
-                cout << "Saliendo..." << endl;
-                break;
-            default:
-                cout << "Opción no valida." << endl;
-        }
-    } while (opcion != 6);
+        } while (opcion != 6);
+    } catch (const exception& e) {
+        cerr << "Excepción capturada: " << e.what() << endl;
+    }
 
     return 0;
 }
